@@ -3,6 +3,7 @@ package com.dongying.service.impl;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,10 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.dongying.mysql.dao.GoodsCriteriaQueryDao;
 import com.dongying.mysql.dao.GoodsDao;
 import com.dongying.mysql.model.BeverageGoods;
 import com.dongying.service.BackendService;
@@ -32,8 +33,6 @@ public class BackendServiceImpl implements BackendService {
 
 	@Autowired
 	private GoodsDao goodsDao;
-	@Autowired
-	private GoodsCriteriaQueryDao goodsCriQuery;
 
 	@Override
 	public BeverageGoods createGoods(GoodsVo goodsVo) {
@@ -81,19 +80,31 @@ public class BackendServiceImpl implements BackendService {
 
 	@Override
 	public GoodsDataInfo queryGoodsData(GoodsDataCondition condition, GenericPageable genericPageable) {
-//		Pageable pageable = PageRequest.of(genericPageable.getCurrentPageNo()-1, genericPageable.getPageDataSize());		
-		Page<BeverageGoods> goodsResult = goodsCriQuery.findGoodsByFilter(condition, genericPageable);
+		Pageable pageable = PageRequest.of(genericPageable.getCurrentPageNo(), genericPageable.getPageDataSize());
+		Page<BeverageGoods> goodsResult = goodsDao.findByGoodsIDIsNotNull(pageable);
 		Long dataTotalSize = goodsResult.getTotalElements();
-		//回傳資料總比數
+		
 		genericPageable.setDataTotalSize(dataTotalSize.intValue());
+
+		int endPageNo = (dataTotalSize.intValue()/ genericPageable.getPageDataSize()) + 1;
+		genericPageable.setEndPageNo(endPageNo);
+
+//		int currentPageNo = genericPageable.getCurrentPageNo();
+//		if (currentPageNo == 0) {
+//			
+//		}
+//		if (currentPageNo > endPageNo) {
+//			currentPageNo = endPageNo;
+//		}
+//
+//		genericPageable.setPagination(pagination);
 
 		GoodsDataInfo goodsDataInfo = GoodsDataInfo.builder().goodsDatas(goodsResult.toList()).genericPageable(genericPageable)
 				.build();
-
 		return goodsDataInfo;
 	}
 
-	private void copyPicture(GoodsVo goodsVo) {
+	public void copyPicture(GoodsVo goodsVo) {
 		// 複制檔案
 		MultipartFile file = goodsVo.getFile();
 		// 前端傳入檔案名稱
