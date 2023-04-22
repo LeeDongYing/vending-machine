@@ -1,0 +1,8 @@
+README.md
+
+.classpath
+.project
+.factorypath
+.setting
+*.yml
+*.properties

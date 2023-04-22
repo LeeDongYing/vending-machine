@@ -21,6 +21,8 @@ import com.dongying.service.BackendService;
 import com.dongying.vo.GenericPageable;
 import com.dongying.vo.GoodsDataCondition;
 import com.dongying.vo.GoodsDataInfo;
+import com.dongying.vo.GoodsReportSalesInfo;
+import com.dongying.vo.GoodsSalesReportCondition;
 import com.dongying.vo.GoodsVo;
 
 import io.swagger.annotations.ApiOperation;
@@ -90,26 +92,22 @@ public class BackendController {
 		return ResponseEntity.ok(goodsDataInfo);
 	}
 
-//	@ApiOperation(value = "購物網-後臺-商品訂單查詢(一個商品對應到多筆訂單)")
-//	@GetMapping(value = "/queryGoodsSales")
-//	public ResponseEntity<GoodsReportSalesInfo> queryGoodsSales(
-//			 @RequestParam String startDate, @RequestParam String endDate,  
-//			 @RequestParam int currentPageNo, @RequestParam int pageDataSize, @RequestParam int pagesIconSize) {
-//		/*
-//		 startDate:2022/09/19
-//		 endDate:2022/09/19
-//		 currentPageNo:1
-//		 pageDataSize: 3
-//		 pagesIconSize: 3
-//		 */	
-//		GoodsSalesReportCondition condition = GoodsSalesReportCondition.builder().startDate(startDate).endDate(endDate).build();
-//		
-//		GenericPageable genericPageable = GenericPageable.builder().currentPageNo(currentPageNo)
-//				.pageDataSize(pageDataSize).pagesIconSize(pagesIconSize).build();
-//		
-//		GoodsReportSalesInfo goodsReportSalesInfo = backendService.queryGoodsSales(condition, genericPageable);
-//		
-//		return ResponseEntity.ok(goodsReportSalesInfo);
-//	}
+	@ApiOperation(value = "購物網-後臺-商品訂單查詢(一個商品對應到多筆訂單)")
+	@GetMapping(value = "/queryGoodsSales")
+	public ResponseEntity<GoodsReportSalesInfo> queryGoodsSales(@RequestParam String startDate,
+			@RequestParam String endDate, @RequestParam int currentPageNo, @RequestParam int pageDataSize) {
+		/*
+		 * startDate:2022/09/19 endDate:2022/09/19 currentPageNo:1 pageDataSize: 3
+		 */
+		GoodsSalesReportCondition condition = GoodsSalesReportCondition.builder().startDate(startDate).endDate(endDate)
+				.build();
+
+		GenericPageable genericPageable = GenericPageable.builder().currentPageNo(currentPageNo)
+				.pageDataSize(pageDataSize).build();
+
+		GoodsReportSalesInfo goodsReportSalesInfo = backendService.queryGoodsSales(condition, genericPageable);
+
+		return ResponseEntity.ok(goodsReportSalesInfo);
+	}
 
 }

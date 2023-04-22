@@ -3,6 +3,8 @@ package com.dongying.service.impl;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,18 +14,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.dongying.mysql.dao.GoodsCriteriaQueryDao;
+import com.dongying.mysql.dao.CriteriaQueryDao;
 import com.dongying.mysql.dao.GoodsDao;
 import com.dongying.mysql.model.BeverageGoods;
+import com.dongying.mysql.model.BeverageOrder;
 import com.dongying.service.BackendService;
 import com.dongying.vo.GenericPageable;
 import com.dongying.vo.GoodsDataCondition;
 import com.dongying.vo.GoodsDataInfo;
+import com.dongying.vo.GoodsReportSalesInfo;
+import com.dongying.vo.GoodsSalesReportCondition;
 import com.dongying.vo.GoodsVo;
 
 @Service
@@ -33,7 +36,7 @@ public class BackendServiceImpl implements BackendService {
 	@Autowired
 	private GoodsDao goodsDao;
 	@Autowired
-	private GoodsCriteriaQueryDao goodsCriQuery;
+	private CriteriaQueryDao criQuery;
 
 	@Override
 	public BeverageGoods createGoods(GoodsVo goodsVo) {
@@ -81,16 +84,46 @@ public class BackendServiceImpl implements BackendService {
 
 	@Override
 	public GoodsDataInfo queryGoodsData(GoodsDataCondition condition, GenericPageable genericPageable) {
-//		Pageable pageable = PageRequest.of(genericPageable.getCurrentPageNo()-1, genericPageable.getPageDataSize());		
-		Page<BeverageGoods> goodsResult = goodsCriQuery.findGoodsByFilter(condition, genericPageable);
+		Page<BeverageGoods> goodsResult = criQuery.findGoodsByFilter(condition, genericPageable);
 		Long dataTotalSize = goodsResult.getTotalElements();
-		//回傳資料總比數
-		genericPageable.setDataTotalSize(dataTotalSize.intValue());
-
-		GoodsDataInfo goodsDataInfo = GoodsDataInfo.builder().goodsDatas(goodsResult.toList()).genericPageable(genericPageable)
-				.build();
+		// 回填page data
+		genericPageable = setGenericPageable(genericPageable, dataTotalSize);
+		GoodsDataInfo goodsDataInfo = GoodsDataInfo.builder().goodsDatas(goodsResult.toList())
+				.genericPageable(genericPageable).build();
 
 		return goodsDataInfo;
+	}
+
+	@Override
+	public GoodsReportSalesInfo queryGoodsSales(GoodsSalesReportCondition condition, GenericPageable genericPageable) {
+		/*
+		 * startDate:2022/09/19 endDate:2022/09/19 currentPageNo:1 pageDataSize: 3
+		 */
+		Page<BeverageOrder> orderList = criQuery.findOrdersByFilter(condition, genericPageable);
+		Long dataTotalSize = orderList.getTotalElements();
+		// 回填page data
+		genericPageable = setGenericPageable(genericPageable, dataTotalSize);
+		List<BeverageOrder> beverageOrders = new ArrayList<>();
+		if(!orderList.isEmpty()) {
+			beverageOrders = orderList.toList();
+		}
+		GoodsReportSalesInfo goodsReportSalesInfo = GoodsReportSalesInfo.builder()
+				.goodsReportSalesList(beverageOrders).genericPageable(genericPageable).build();		
+		return goodsReportSalesInfo;
+	}
+
+	private GenericPageable setGenericPageable(GenericPageable genericPageable, Long dataTotalSize) {
+		int pageDataSize = genericPageable.getPageDataSize();
+		int dataTotalSizeInt = dataTotalSize.intValue();
+		int totalPage = 0;
+		if (dataTotalSizeInt % pageDataSize == 0) {
+			totalPage = dataTotalSizeInt / pageDataSize;
+		} else {
+			totalPage = (dataTotalSizeInt / pageDataSize) + 1;
+		}
+		genericPageable.setDataTotalSize(dataTotalSizeInt);
+		genericPageable.setTotalPage(totalPage);
+		return genericPageable;
 	}
 
 	private void copyPicture(GoodsVo goodsVo) {

@@ -7,13 +7,8 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @Data
-public class GenericPageable {
+public class GoodsSalesReportCondition {
 
-	private int currentPageNo;
-
-	private int pageDataSize;
-	
-	private int totalPage;
-
-	private int dataTotalSize;
+	private String startDate;
+	private String endDate;
 }

@@ -7,6 +7,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.dongying.mysql.model.BeverageGoods;
+import com.dongying.service.GoodsOrderService;
+import com.dongying.vo.GoodsOrderVo;
+
 //import com.ecommerce.entity.BeverageGoods;
 //import com.ecommerce.service.GoodsOrderService;
 //import com.ecommerce.vo.GoodsOrderVo;
@@ -16,47 +21,47 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping("/ecommerce/GoodsOrderController")
 public class GoodsOrderController {
 	
-//	@Autowired
-//	private GoodsOrderService goodsOrderService;
+	@Autowired
+	private GoodsOrderService goodsOrderService;
 	
-//	@ApiOperation("新增商品訂單(一對多練習)")
-//	@PostMapping(value = "/createGoodsOrder")
-//	public ResponseEntity<BeverageGoods> createGoodsOrder(@RequestBody GoodsOrderVo goodsOrderVo) {
-//		// 新增「一筆商品」同時新增「多筆訂單」48、49、50
-//		/*
-//			{
-//			  "goodsName": "iPhone 12 Pro",
-//			  "description": "超瓷晶盾面板 霧面質感玻璃機背 不鏽鋼設計",
-//			  "imageName": "iPhone12.jpg",
-//			  "price": 32000,
-//			  "quantity": 10,
-//			  "status": "1",
-//			  "orderVos": [
-//			    {
-//			      "orderDate": "2023-03-01T00:00:00",
-//			      "customerID": "A124243295",
-//			      "buyQuantity": 1,
-//			      "goodsBuyPrice": 32000
-//			    },
-//			    {
-//			      "orderDate": "2023-03-02T00:00:00",
-//			      "customerID": "D201663865",
-//			      "buyQuantity": 1,
-//			      "goodsBuyPrice": 32000
-//			    },
-//			    {
-//			      "orderDate": "2023-03-03T00:00:00",
-//			      "customerID": "J213664153",
-//			      "buyQuantity": 1,
-//			      "goodsBuyPrice": 32000
-//			    }
-//			  ]
-//			}
-//		 */
-//		BeverageGoods beverageGoods = goodsOrderService.createGoodsOrder(goodsOrderVo);
-//		
-//		return ResponseEntity.ok(beverageGoods);
-//	}
+	@ApiOperation("新增商品訂單(一對多練習)")
+	@PostMapping(value = "/createGoodsOrder")
+	public ResponseEntity<BeverageGoods> createGoodsOrder(@RequestBody GoodsOrderVo goodsOrderVo) {
+		// 新增「一筆商品」同時新增「多筆訂單」48、49、50
+		/*
+			{
+			  "goodsName": "iPhone 12 Pro",
+			  "description": "超瓷晶盾面板 霧面質感玻璃機背 不鏽鋼設計",
+			  "imageName": "iPhone12.jpg",
+			  "price": 32000,
+			  "quantity": 10,
+			  "status": "1",
+			  "orderVos": [
+			    {
+			      "orderDate": "2023-03-01T00:00:00",
+			      "customerID": "A124243295",
+			      "buyQuantity": 1,
+			      "goodsBuyPrice": 32000
+			    },
+			    {
+			      "orderDate": "2023-03-02T00:00:00",
+			      "customerID": "D201663865",
+			      "buyQuantity": 1,
+			      "goodsBuyPrice": 32000
+			    },
+			    {
+			      "orderDate": "2023-03-03T00:00:00",
+			      "customerID": "J213664153",
+			      "buyQuantity": 1,
+			      "goodsBuyPrice": 32000
+			    }
+			  ]
+			}
+		 */
+		BeverageGoods beverageGoods = goodsOrderService.createGoodsOrder(goodsOrderVo);
+		
+		return ResponseEntity.ok(beverageGoods);
+	}
 	
 //	@ApiOperation("更新商品訂單(一對多練習)")
 //	@PatchMapping(value = "/updateGoodsOrder")

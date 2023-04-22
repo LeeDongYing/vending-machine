@@ -34,10 +34,7 @@ public class BeverageOrder {
 
 	@Column(name = "ORDER_DATE")
 	private LocalDateTime orderDate;
-
-	@Column(name = "CUSTOMER_ID")
-	private String customerID;
-
+	
 	@Column(name = "GOODS_BUY_PRICE")
 	private Integer goodsBuyPrice;
 
@@ -47,8 +44,15 @@ public class BeverageOrder {
 	@Column(name = "GOODS_ID")
 	private Long goodsID;
 
+	@Column(name = "CUSTOMER_ID")
+	private String customerID;
+
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "GOODS_ID",insertable = false,updatable = false)
 	private BeverageGoods beverageGoods;
+	
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "CUSTOMER_ID",insertable = false,updatable = false)
+	private Member member;
 
 }
