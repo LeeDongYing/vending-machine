@@ -15,8 +15,11 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
@@ -25,6 +28,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @Data
 @Entity
+@EqualsAndHashCode(of = {"orderID"})
 @Table(name = "BEVERAGE_ORDER")
 public class BeverageOrder {
 	@Id
@@ -47,10 +51,12 @@ public class BeverageOrder {
 	@Column(name = "CUSTOMER_ID")
 	private String customerID;
 
+	@JsonIgnore
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "GOODS_ID",insertable = false,updatable = false)
 	private BeverageGoods beverageGoods;
 	
+	@JsonIgnore
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "CUSTOMER_ID",insertable = false,updatable = false)
 	private Member member;

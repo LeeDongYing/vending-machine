@@ -14,8 +14,8 @@ public class OrderVo {
 
 	private long goodsID;
 
-	private long goodsBuyPrice;
+	private Integer goodsBuyPrice;
 
-	private long buyQuantity;
+	private Integer buyQuantity;
 	
 }

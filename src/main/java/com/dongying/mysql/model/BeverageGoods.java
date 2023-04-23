@@ -50,7 +50,6 @@ public class BeverageGoods {
 	@Column(name = "STATUS")
 	private String status;
 
-	@JsonIgnore
 	@OneToMany(mappedBy = "beverageGoods", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@OrderBy(value = "orderID")
 	private List<BeverageOrder> beverageOrders;
