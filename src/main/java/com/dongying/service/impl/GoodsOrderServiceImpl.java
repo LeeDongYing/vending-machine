@@ -126,7 +126,7 @@ public class GoodsOrderServiceImpl implements GoodsOrderService {
 			String customerID = orderVo.getCustomerID();
 
 			if (buyQuantity != null) {
-				beverageOrder.setBuyQuantity(orderVo.getBuyQuantity());
+				beverageOrder.setBuyQuantity(buyQuantity);
 			}
 			if (goodsBuyPrice != null) {
 				beverageOrder.setGoodsBuyPrice(goodsBuyPrice);

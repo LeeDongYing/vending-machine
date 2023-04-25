@@ -13,8 +13,7 @@ public interface GoodsOrderService {
 
 	BeverageOrder queryOrderById(Long orderID);
 
-	List<BeverageOrder> queryOrders();
-	
+	List<BeverageOrder> queryOrders();	
 
 	BeverageGoods updateGoodsOrder(GoodsOrderVo goodsOrderVo);
 

@@ -1,8 +1,8 @@
 README.md
 
-.classpath
-.project
-.factorypath
-.setting
+*.classpath
+*.project
+*.factorypath
+*.setting
 *.yml
 *.properties
