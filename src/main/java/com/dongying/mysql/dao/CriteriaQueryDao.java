@@ -45,6 +45,7 @@ public class CriteriaQueryDao {
 		Integer quantity = condition.getQuantity();
 		String goodsName = condition.getGoodsName();
 		String priceSort = condition.getPriceSort();
+		String status = condition.getStatus();
 
 		// 有給goodId 用eq
 		if (goodId != null) {
@@ -68,15 +69,20 @@ public class CriteriaQueryDao {
 		}
 
 		// 根據需要設置排序
-		if (priceSort != null && priceSort.equals("asc")) {
-			cq.orderBy(cb.asc(beverageGoods.get("price")));
-		} else if (priceSort != null && priceSort.equals("desc")) {
-			cq.orderBy(cb.desc(beverageGoods.get("price")));
+		if (priceSort != null) {
+			if (priceSort.equals("asc")) {
+				cq.orderBy(cb.asc(beverageGoods.get("price")));
+			} else if (priceSort.equals("desc")) {
+				cq.orderBy(cb.desc(beverageGoods.get("price")));
+			}
 		}
-		// 狀態必填
-		predicates.add(cb.equal(beverageGoods.get("status"), condition.getStatus()));
+		// 狀態
+		if (status != null) {
+			predicates.add(cb.equal(beverageGoods.get("status"), condition.getStatus()));
+		}
 		// 組合條件查詢
-		cq.select(beverageGoods).where(predicates.toArray(new Predicate[0]));
+		Predicate[] predicateArr = new Predicate[predicates.size()];
+		cq.select(beverageGoods).where(predicates.toArray(predicateArr));
 		// 分頁
 		int currentPageNo = genericPageable.getCurrentPageNo();
 		int pageDataSize = genericPageable.getPageDataSize();
@@ -114,7 +120,8 @@ public class CriteriaQueryDao {
 			predicates.add(cb.lessThanOrEqualTo(beverageOrder.get("orderDate"), endDate));
 		}
 		// 組合條件查詢
-		cq.select(beverageOrder).where(predicates.toArray(new Predicate[0]));
+		Predicate[] predicateArr = new Predicate[predicates.size()];
+		cq.select(beverageOrder).where(predicates.toArray(predicateArr));
 
 		// 分頁
 		int currentPageNo = genericPageable.getCurrentPageNo();

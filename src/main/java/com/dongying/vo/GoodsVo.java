@@ -8,7 +8,11 @@ import javax.validation.constraints.Pattern;
 import org.springframework.web.multipart.MultipartFile;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
+@SuperBuilder
+@NoArgsConstructor
 @Data
 public class GoodsVo {
 

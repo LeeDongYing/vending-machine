@@ -51,13 +51,13 @@ public class BeverageOrder {
 	@Column(name = "CUSTOMER_ID")
 	private String customerID;
 
-	@JsonIgnore
+	
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "GOODS_ID",insertable = false,updatable = false)
 	private BeverageGoods beverageGoods;
 	
 	@JsonIgnore
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CUSTOMER_ID",insertable = false,updatable = false)
 	private Member member;
 

@@ -21,7 +21,7 @@ public class BeverageMemberServiceImpl implements BeverageMemberService {
 		String identificationNo = memberInfo.getIdentificationNo();
 		String password = memberInfo.getPassword();
 
-		MemberInfo memberVo = MemberInfo.builder().isLogin(false).build();
+		MemberInfo memberVo = MemberInfo.builder().build();
 		Optional<Member> optMember = beverageMemberDao.findByIdentificationNoAndPassword(identificationNo, password);
 		if (optMember.isPresent()) {
 			Member member = optMember.get();

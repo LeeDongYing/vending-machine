@@ -16,9 +16,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dongying.service.FrontendService;
+import com.dongying.vo.CheckoutCompleteInfo;
 import com.dongying.vo.GenericPageable;
+import com.dongying.vo.GoodsDataCondition;
+import com.dongying.vo.GoodsDataInfo;
 import com.dongying.vo.GoodsVo;
 import com.dongying.vo.MemberInfo;
+import com.dongying.vo.OrderCustomer;
+import com.dongying.vo.ProductGoodsInfo;
 
 import io.swagger.annotations.ApiOperation;
 
@@ -28,41 +33,41 @@ public class FrontendController {
 
 	private static Logger logger = LoggerFactory.getLogger(FrontendController.class);
 
-//	@Autowired
-//	private HttpSession httpSession;
-//
-//	@Resource
-//	private MemberInfo sessionMemberInfo;
-//
-//	@Resource(name = "sessionCarGoods")
-//	private List<GoodsVo> cartGoods;
-//
-//	@Autowired
-//	private FrontendService frontendService;
-//
-//	@ApiOperation(value = "購物網-前臺-查詢商品列表")
-//	@GetMapping(value = "/queryGoodsData")
-//	public ResponseEntity<ProductGoodsInfo> queryGoodsData(@RequestParam(required = false) String searchKeyword,
-//			 @RequestParam int currentPageNo, @RequestParam int pageDataSize) {
-//	
-//		GenericPageable genericPageable = GenericPageable.builder().currentPageNo(currentPageNo)
-//				.pageDataSize(pageDataSize).build();
-//		
-//		ProductGoodsInfo goodsDataInfo = frontendService.queryGoodsData(searchKeyword, genericPageable);		
-//		
-//		return ResponseEntity.ok(goodsDataInfo);
-//	}
+	@Autowired
+	private HttpSession httpSession;
 
-//	@ApiOperation(value = "購物網-前臺-結帳購物車商品")
-//	@PostMapping(value = "/checkoutGoods")
-//	public ResponseEntity<CheckoutCompleteInfo> checkoutGoods(@RequestBody OrderCustomer customer) {
-//		
-//		logger.info("HttpSession checkoutGoods:" + httpSession.getId());
-//		logger.info("CheckoutGoods:" + sessionMemberInfo.toString());
-//		
-//		CheckoutCompleteInfo checkoutCompleteInfo = frontendService.checkoutGoods(sessionMemberInfo, customer, cartGoods);
-//		
-//		return ResponseEntity.ok(checkoutCompleteInfo);
-//	}
+	@Resource
+	private MemberInfo sessionMemberInfo;
+
+	@Resource(name = "sessionCartGoods")
+	private List<GoodsVo> cartGoods;
+
+	@Autowired
+	private FrontendService frontendService;
+
+	@ApiOperation(value = "購物網-前臺-查詢商品列表")
+	@GetMapping(value = "/queryGoodsData")
+	public ResponseEntity<GoodsDataInfo> queryGoodsData(@RequestParam(required = false) String searchKeyword,
+			@RequestParam int currentPageNo, @RequestParam int pageDataSize) {
+
+		GenericPageable genericPageable = GenericPageable.builder().currentPageNo(currentPageNo)
+				.pageDataSize(pageDataSize).build();
+		GoodsDataCondition condition = GoodsDataCondition.builder().goodsName(searchKeyword).build();
+		GoodsDataInfo goodsDataInfo = frontendService.queryGoodsData(condition, genericPageable);
+
+		return ResponseEntity.ok(goodsDataInfo);
+	}
+
+	@ApiOperation(value = "購物網-前臺-結帳購物車商品")
+	@PostMapping(value = "/checkoutGoods")
+	public ResponseEntity<CheckoutCompleteInfo> checkoutGoods(@RequestBody OrderCustomer customer) {
+		
+		logger.info("HttpSession checkoutGoods:" + httpSession.getId());
+		logger.info("CheckoutGoods:" + sessionMemberInfo.toString());
+		
+		CheckoutCompleteInfo checkoutCompleteInfo = frontendService.checkoutGoods(sessionMemberInfo, customer, cartGoods);
+		
+		return ResponseEntity.ok(checkoutCompleteInfo);
+	}
 
 }
