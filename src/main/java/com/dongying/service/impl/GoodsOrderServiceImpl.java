@@ -32,30 +32,38 @@ public class GoodsOrderServiceImpl implements GoodsOrderService {
 
 	@Transactional
 	@Override
-	public BeverageOrder createGoodsOrder(OrderVo orderVo) {
-		BeverageOrder beverageOrder = null;
-		Long goodsID = orderVo.getGoodsID();
-		Optional<BeverageGoods> optBeverageGoods = goodsDao.findById(goodsID);
-		if (!optBeverageGoods.isPresent()) {
-			return null;
+	public List<BeverageOrder> createGoodsOrder(List<OrderVo> OrderVoList) {
+		List<BeverageOrder> forDbList = new ArrayList<>();
+		for (OrderVo orderVo : OrderVoList) {
+			BeverageOrder beverageOrder = null;
+			Long goodsID = orderVo.getGoodsID();
+			Optional<BeverageGoods> optBeverageGoods = goodsDao.findById(goodsID);
+			if (optBeverageGoods.isPresent()) {
+				BeverageGoods beverageGoods = optBeverageGoods.get();
+
+				String localDateTimeNow = LocalDateTime.now().format(formatter);
+				LocalDateTime orderdate = LocalDateTime.parse(localDateTimeNow, formatter);
+				String customerID = orderVo.getCustomerID();
+
+				// goodsBuyPrice 要查詢當下商品價格
+				Integer goodsBuyPrice = beverageGoods.getPrice();
+
+				// 庫存不夠 直接等於庫存
+				Integer goodsQuantity = beverageGoods.getQuantity();
+				Integer buyQuantity = orderVo.getBuyQuantity();
+				buyQuantity = buyQuantity > goodsQuantity ? goodsQuantity : buyQuantity;
+				// update商品庫存
+				beverageGoods.setQuantity(goodsQuantity - buyQuantity);
+				beverageOrder = BeverageOrder.builder().orderDate(orderdate).goodsBuyPrice(goodsBuyPrice)
+						.buyQuantity(buyQuantity).goodsID(goodsID).customerID(customerID).beverageGoods(beverageGoods)
+						.build();
+				if (buyQuantity > 0) {
+					forDbList.add(beverageOrder);
+				}
+			}
 		}
-		String localDateTimeNow = LocalDateTime.now().format(formatter);
-		LocalDateTime orderdate = LocalDateTime.parse(localDateTimeNow, formatter);
-		String customerID = orderVo.getCustomerID();
+		return orderDao.saveAll(forDbList);
 
-		// goodsBuyPrice 要查詢當下商品價格
-		BeverageGoods beverageGoods = goodsDao.findById(goodsID).get();
-		Integer goodsBuyPrice = beverageGoods.getPrice();
-
-		// 庫存不夠 直接等於庫存
-		Integer goodsQuantity = beverageGoods.getQuantity();
-		Integer buyQuantity = orderVo.getBuyQuantity();
-		buyQuantity = buyQuantity > goodsQuantity ? goodsQuantity : buyQuantity;
-
-		beverageOrder = BeverageOrder.builder().orderDate(orderdate).goodsBuyPrice(goodsBuyPrice)
-				.buyQuantity(buyQuantity).goodsID(goodsID).customerID(customerID).beverageGoods(beverageGoods).build();
-
-		return orderDao.save(beverageOrder);
 	}
 
 	@Override
@@ -94,19 +102,23 @@ public class GoodsOrderServiceImpl implements GoodsOrderService {
 		if (description != null) {
 			beverageGoods.setDescription(description);
 		}
+
 		if (goodsName != null) {
 			beverageGoods.setGoodsName(goodsName);
 		}
+
 		if (price != null) {
 			beverageGoods.setPrice(price);
 		}
+
 		if (quantity != null) {
 			beverageGoods.setQuantity(quantity);
 		}
-		if (imageName != null)
+
+		if (imageName != null) {
 			beverageGoods.setQuantity(quantity);
-		{
 		}
+
 		if (status != null) {
 			beverageGoods.setStatus(status);
 		}

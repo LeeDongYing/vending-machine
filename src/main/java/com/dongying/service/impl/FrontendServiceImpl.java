@@ -1,13 +1,11 @@
 package com.dongying.service.impl;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
-import javax.transaction.Transactional.TxType;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -95,6 +93,7 @@ public class FrontendServiceImpl implements FrontendService {
 		}
 		genericPageable.setDataTotalSize(dataTotalSizeInt);
 		genericPageable.setTotalPage(totalPage);
+		genericPageable.setPagination(totalPage);
 		return genericPageable;
 	}
 }

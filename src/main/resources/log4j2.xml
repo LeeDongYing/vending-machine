@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration status="info">
    <properties>
-      <property name="LOG_HOME">/Users/hsiehyajen/data/logs/training</property>
+      <property name="LOG_HOME">data/logs/training</property>
       <property name="LOG_PATTERN">[%d{yyyy-MM-dd_HH:mm:ss}][%p][%F::%M][%L]-%m%n</property>
       <property name="LOG_JSON_PATTERN">{"t":"%d{yyyy-MM-dd HH:mm:ss.SSS}","m":%m}%n</property>
       <property name="DEL_DAY">7d</property>

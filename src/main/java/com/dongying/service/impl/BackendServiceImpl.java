@@ -31,7 +31,7 @@ import com.dongying.vo.GoodsVo;
 
 @Service
 public class BackendServiceImpl implements BackendService {
-	private static Logger logger = LoggerFactory.getLogger(BackendServiceImpl.class);
+//	private static Logger logger = LoggerFactory.getLogger(BackendServiceImpl.class);
 
 	@Autowired
 	private GoodsDao goodsDao;
@@ -55,14 +55,34 @@ public class BackendServiceImpl implements BackendService {
 
 		BeverageGoods beverageGoods = null;
 		if (optBeverageGoods.isPresent()) {
-			copyPicture(goodsVo);
+			if (goodsVo.getFile() != null) {
+				copyPicture(goodsVo);
+			}
+			String statusVo = goodsVo.getStatus();
+			String goodsNameVo = goodsVo.getGoodsName();
+			String descriptionVo = goodsVo.getDescription();
+			String imageNameVo = goodsVo.getImageName();
+			Integer quantityVo = goodsVo.getQuantity();
+			Integer priceVo = goodsVo.getPrice();
 			beverageGoods = optBeverageGoods.get();
-			beverageGoods.setStatus(goodsVo.getStatus());
-			beverageGoods.setGoodsName(goodsVo.getGoodsName());
-			beverageGoods.setImageName(goodsVo.getImageName());
-			beverageGoods.setQuantity(goodsVo.getQuantity());
-			beverageGoods.setDescription(goodsVo.getDescription());
-			beverageGoods.setPrice(goodsVo.getPrice());
+			if (statusVo != null) {
+				beverageGoods.setStatus(statusVo);
+			}
+			if(goodsNameVo!=null) {
+				beverageGoods.setGoodsName(goodsNameVo);				
+			}
+			if(imageNameVo!=null) {
+				beverageGoods.setImageName(imageNameVo);				
+			}
+			if(quantityVo!=null) {
+				beverageGoods.setQuantity(quantityVo);				
+			}
+			if(descriptionVo!=null) {
+				beverageGoods.setDescription(descriptionVo);				
+			}
+			if(priceVo!=null) {
+				beverageGoods.setPrice(priceVo);				
+			}
 		}
 		return beverageGoods;
 	}
@@ -104,11 +124,11 @@ public class BackendServiceImpl implements BackendService {
 		// 回填page data
 		genericPageable = setGenericPageable(genericPageable, dataTotalSize);
 		List<BeverageOrder> beverageOrders = new ArrayList<>();
-		if(!orderList.isEmpty()) {
-			beverageOrders = orderList.toList();
+		if (!orderList.isEmpty()) {
+			beverageOrders = orderList.getContent();
 		}
-		GoodsReportSalesInfo goodsReportSalesInfo = GoodsReportSalesInfo.builder()
-				.goodsReportSalesList(beverageOrders).genericPageable(genericPageable).build();		
+		GoodsReportSalesInfo goodsReportSalesInfo = GoodsReportSalesInfo.builder().goodsReportSalesList(beverageOrders)
+				.genericPageable(genericPageable).build();
 		return goodsReportSalesInfo;
 	}
 
@@ -123,6 +143,7 @@ public class BackendServiceImpl implements BackendService {
 		}
 		genericPageable.setDataTotalSize(dataTotalSizeInt);
 		genericPageable.setTotalPage(totalPage);
+		genericPageable.setPagination(totalPage);
 		return genericPageable;
 	}
 
@@ -133,10 +154,10 @@ public class BackendServiceImpl implements BackendService {
 		String fileName = goodsVo.getImageName();
 
 		try {
-			Files.copy(file.getInputStream(), Paths.get("/Users/hsiehyajen/Documents/DrinksImage").resolve(fileName));
-		} catch (IOException e) {
-			logger.info("圖檔發生錯誤：");
-			logger.info(e.getMessage());
+			Files.copy(file.getInputStream(), Paths.get("/Users/hsiehyajen/Documents/springWorkspace/springboot-web-project/target/classes/static/images/DrinksImage").resolve(fileName));
+		} catch (Exception e) {
+//			logger.info("圖檔發生錯誤：");
+//			logger.info(e.getMessage());
 		}
 	}
 }

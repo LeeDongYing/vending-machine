@@ -10,6 +10,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
@@ -43,6 +44,7 @@ public class CriteriaQueryDao {
 		Integer startPrice = condition.getStartPrice();
 		Integer endPrice = condition.getEndPrice();
 		Integer quantity = condition.getQuantity();
+		boolean relationOper = condition.isRelationOper();
 		String goodsName = condition.getGoodsName();
 		String priceSort = condition.getPriceSort();
 		String status = condition.getStatus();
@@ -50,35 +52,41 @@ public class CriteriaQueryDao {
 		// 有給goodId 用eq
 		if (goodId != null) {
 			predicates.add(cb.equal(beverageGoods.get("goodsID"), goodId));
-		}
-		// 有要搜尋的名稱 用模糊查詢
-		if (goodsName != null) {
-			predicates.add(cb.like(beverageGoods.get("goodsName"), "%" + goodsName + "%"));
-		}
-		// 有數量條件 要大於等於
-		if (quantity != null) {
-			predicates.add(cb.greaterThanOrEqualTo(beverageGoods.get("quantity"), quantity));
-		}
-		// 有價錢條件
-		if (startPrice != null && endPrice != null) {
-			predicates.add(cb.between(beverageGoods.get("price"), startPrice, endPrice));
-		} else if (startPrice != null) {
-			predicates.add(cb.greaterThanOrEqualTo(beverageGoods.get("price"), startPrice));
-		} else if (endPrice != null) {
-			predicates.add(cb.lessThanOrEqualTo(beverageGoods.get("price"), endPrice));
-		}
-
-		// 根據需要設置排序
-		if (priceSort != null) {
-			if (priceSort.equals("asc")) {
-				cq.orderBy(cb.asc(beverageGoods.get("price")));
-			} else if (priceSort.equals("desc")) {
-				cq.orderBy(cb.desc(beverageGoods.get("price")));
+		} else {
+			// 有要搜尋的名稱 用模糊查詢
+			if (goodsName != null) {
+				predicates.add(cb.like(beverageGoods.get("goodsName"), "%" + goodsName + "%"));
 			}
-		}
-		// 狀態
-		if (status != null) {
-			predicates.add(cb.equal(beverageGoods.get("status"), condition.getStatus()));
+			// 有數量條件 要大於等於 true >= ,false <=
+			if (quantity != null) {
+				if (relationOper) {
+					predicates.add(cb.greaterThanOrEqualTo(beverageGoods.get("quantity"), quantity));
+				} else {
+					predicates.add(cb.lessThanOrEqualTo(beverageGoods.get("quantity"), quantity));
+				}
+			}
+
+			// 有價錢條件
+			if (startPrice != null && endPrice != null) {
+				predicates.add(cb.between(beverageGoods.get("price"), startPrice, endPrice));
+			} else if (startPrice != null) {
+				predicates.add(cb.greaterThanOrEqualTo(beverageGoods.get("price"), startPrice));
+			} else if (endPrice != null) {
+				predicates.add(cb.lessThanOrEqualTo(beverageGoods.get("price"), endPrice));
+			}
+
+			// 根據需要設置排序
+			if (priceSort != null) {
+				if (priceSort.equals("asc")) {
+					cq.orderBy(cb.asc(beverageGoods.get("price")));
+				} else if (priceSort.equals("desc")) {
+					cq.orderBy(cb.desc(beverageGoods.get("price")));
+				}
+			}
+			// 狀態
+			if (status != null && !"2".equals(status)) {
+				predicates.add(cb.equal(beverageGoods.get("status"), condition.getStatus()));
+			}
 		}
 		// 組合條件查詢
 		Predicate[] predicateArr = new Predicate[predicates.size()];
@@ -119,9 +127,13 @@ public class CriteriaQueryDao {
 			LocalDateTime endDate = LocalDateTime.parse(endDateString, formatter);
 			predicates.add(cb.lessThanOrEqualTo(beverageOrder.get("orderDate"), endDate));
 		}
+
+		// 排序
+		Order order = cb.desc(beverageOrder.get("orderID"));
+
 		// 組合條件查詢
 		Predicate[] predicateArr = new Predicate[predicates.size()];
-		cq.select(beverageOrder).where(predicates.toArray(predicateArr));
+		cq.select(beverageOrder).where(predicates.toArray(predicateArr)).orderBy(order);
 
 		// 分頁
 		int currentPageNo = genericPageable.getCurrentPageNo();

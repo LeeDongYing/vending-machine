@@ -1,8 +1,10 @@
-README.md
-
+target/
+data/
 *.classpath
 *.project
 *.factorypath
 *.setting
 *.yml
 *.properties
+*.class
+README.md

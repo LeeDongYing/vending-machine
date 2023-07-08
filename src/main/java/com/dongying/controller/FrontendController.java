@@ -1,8 +1,10 @@
 package com.dongying.controller;
 
 import java.util.List;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,15 +25,15 @@ import com.dongying.vo.GoodsDataInfo;
 import com.dongying.vo.GoodsVo;
 import com.dongying.vo.MemberInfo;
 import com.dongying.vo.OrderCustomer;
-import com.dongying.vo.ProductGoodsInfo;
 
 import io.swagger.annotations.ApiOperation;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/ecommerce/FrontendController")
 public class FrontendController {
 
-	private static Logger logger = LoggerFactory.getLogger(FrontendController.class);
+//	private static Logger logger = LoggerFactory.getLogger(FrontendController.class);
 
 	@Autowired
 	private HttpSession httpSession;
@@ -62,8 +64,8 @@ public class FrontendController {
 	@PostMapping(value = "/checkoutGoods")
 	public ResponseEntity<CheckoutCompleteInfo> checkoutGoods(@RequestBody OrderCustomer customer) {
 		
-		logger.info("HttpSession checkoutGoods:" + httpSession.getId());
-		logger.info("CheckoutGoods:" + sessionMemberInfo.toString());
+//		logger.info("HttpSession checkoutGoods:" + httpSession.getId());
+//		logger.info("CheckoutGoods:" + sessionMemberInfo.toString());
 		
 		CheckoutCompleteInfo checkoutCompleteInfo = frontendService.checkoutGoods(sessionMemberInfo, customer, cartGoods);
 		

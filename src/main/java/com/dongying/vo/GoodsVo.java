@@ -29,6 +29,9 @@ public class GoodsVo {
 
 	@Min(value = 0)
 	private int quantity;
+	
+	@Min(value = 0)
+	private int buyQuantity;
 
 	private MultipartFile file;
 

@@ -20,6 +20,8 @@ public class GoodsDataCondition {
 	private String priceSort;
 
 	private Integer quantity;
+	
+	private boolean relationOper;
 
 	private String status;
 

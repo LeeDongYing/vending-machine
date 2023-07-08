@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,6 +16,7 @@ import com.dongying.mysql.model.BeverageGoods;
 import com.dongying.mysql.model.BeverageOrder;
 import com.dongying.service.GoodsOrderService;
 import com.dongying.vo.GoodsOrderVo;
+import com.dongying.vo.GoodsVo;
 import com.dongying.vo.OrderVo;
 
 //import com.ecommerce.entity.BeverageGoods;
@@ -22,6 +24,7 @@ import com.dongying.vo.OrderVo;
 //import com.ecommerce.vo.GoodsOrderVo;
 import io.swagger.annotations.ApiOperation;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/ecommerce/GoodsOrderController")
 public class GoodsOrderController {
@@ -31,11 +34,11 @@ public class GoodsOrderController {
 
 	@ApiOperation("新增商品訂單")
 	@PostMapping(value = "/createGoodsOrder")
-	public ResponseEntity<BeverageOrder> createGoodsOrder(@RequestBody OrderVo OrderVo) {
+	public ResponseEntity<List<BeverageOrder>> createGoodsOrder(@RequestBody List<OrderVo> OrderVoList) {
 
-		BeverageOrder beverageOrder = goodsOrderService.createGoodsOrder(OrderVo);
+		List<BeverageOrder> beverageOrders = goodsOrderService.createGoodsOrder(OrderVoList);
 
-		return ResponseEntity.ok(beverageOrder);
+		return ResponseEntity.ok(beverageOrders);
 	}
 
 	@ApiOperation("查詢商品訂單")
@@ -53,7 +56,7 @@ public class GoodsOrderController {
 		return ResponseEntity.ok(beverageOrders);
 	}
 
-	@ApiOperation("更新商品訂單(一對多練習)")
+	@ApiOperation("更新商品訂單(一對多)")
 	@PatchMapping(value = "/updateGoodsOrder")
 	public ResponseEntity<BeverageGoods> updateGoodsOrder(@RequestBody GoodsOrderVo goodsOrderVo) {
 		// 更新「一筆商品」同時更新「多筆訂單」
